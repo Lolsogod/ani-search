@@ -1,4 +1,10 @@
+import LRU from 'quick-lru';
 import type { SearchParams } from "./types";
+
+const searchCache = new LRU({ maxSize: 100 });
+const createCacheKey = (params: SearchParams): string => {
+  return JSON.stringify(params);
+};
 
 export const searchAnime = async ({
   query,
@@ -12,6 +18,15 @@ export const searchAnime = async ({
   end_date,
 }: SearchParams) => {
   try {
+    const cacheKey = createCacheKey({ 
+      query, page, orderBy, sort, type, 
+      minScore, maxScore, start_date, end_date 
+    });
+
+    if (searchCache.has(cacheKey)) {
+      return searchCache.get(cacheKey);
+    }
+
     let url = `https://api.jikan.moe/v4/anime?q=${query}&page=${page}&order_by=${orderBy}&sort=${sort}`;
 
     if (type && type.length > 0) {
@@ -32,6 +47,8 @@ export const searchAnime = async ({
 
     const response = await fetch(url);
     const data = await response.json();
+
+    searchCache.set(cacheKey, data);
 
     return data;
   } catch (error) {
