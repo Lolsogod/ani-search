@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
-import { Pagination as PaginationType } from './types';
+import type { Pagination as PaginationType } from '@/types/anime';
 
 interface PaginationProps {
   page: number;

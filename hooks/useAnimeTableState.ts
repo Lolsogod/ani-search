@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { searchAnime } from '@/api/search';
-import { AnimeData, Pagination, TableFilters, TableSorting, OrderBy, VisibleColumns } from '@/components/AnimeTable/types';
+import type { TableFilters, TableSorting, VisibleColumns } from '@/components/AnimeTable/types';
+import type { AnimeDataTable, OrderBy, Pagination } from '@/types/anime';
 
 export const useAnimeTableState = () => {
-  const [data, setData] = useState<AnimeData[]>([]);
+  const [data, setData] = useState<AnimeDataTable[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<VisibleColumns>('type-score');

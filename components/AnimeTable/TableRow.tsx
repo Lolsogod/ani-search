@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, useWindowDimensions } from 'react-native';
-import { AnimeData, VisibleColumns } from './types';
+import type { VisibleColumns } from './types';
+import type { AnimeDataTable } from '@/types/anime';
 
 interface TableRowProps {
-  item: AnimeData;
+  item: AnimeDataTable;
   index: number;
   visibleColumns: VisibleColumns;
 }

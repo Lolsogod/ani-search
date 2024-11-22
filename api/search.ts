@@ -1,3 +1,5 @@
+import type { SearchParams } from "./types";
+
 export const searchAnime = async ({
   query,
   page = 1,
@@ -30,6 +32,7 @@ export const searchAnime = async ({
 
     const response = await fetch(url);
     const data = await response.json();
+
     return data;
   } catch (error) {
     console.error("Error fetching anime:", error);

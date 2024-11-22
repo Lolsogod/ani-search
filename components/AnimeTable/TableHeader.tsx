@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
-import { OrderBy, SortDirection, VisibleColumns } from './types';
+import type { VisibleColumns } from './types';
+import type { OrderBy, SortDirection } from '@/types/anime';
 
 interface TableHeaderProps {
   orderBy: OrderBy;

@@ -1,6 +1,7 @@
 import { View, TextInput, TouchableOpacity, Text } from 'react-native';
 import { DatePickers } from './DatePickers';
-import { TableFilters, AnimeType } from './types';
+import type { TableFilters } from './types';
+import type { AnimeType } from '@/types/anime';
 
 interface FilterSectionProps {
   filters: TableFilters;

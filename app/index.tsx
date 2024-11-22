@@ -1,4 +1,4 @@
-import AnimeTable from "@/components/AnimeTable/AnimeTable";
+import AnimeTable from "@/components/AnimeTable";
 import {  View } from "react-native";
 
 export default function Index() {
