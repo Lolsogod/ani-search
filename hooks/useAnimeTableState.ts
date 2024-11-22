@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { searchAnime } from '@/api/search';
-import { AnimeData, Pagination, TableFilters, TableSorting, OrderBy } from '../types';
+import { AnimeData, Pagination, TableFilters, TableSorting, OrderBy, VisibleColumns } from '@/components/AnimeTable/types';
 
 export const useAnimeTableState = () => {
   const [data, setData] = useState<AnimeData[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState<VisibleColumns>('type-score');
 
   const [filters, setFilters] = useState<TableFilters>({
     searchQuery: '',
@@ -57,12 +58,12 @@ export const useAnimeTableState = () => {
   };
 
   const updateFilters = (newFilters: Partial<TableFilters>) => {
-    setFilters(prev => ({ ...prev, ...newFilters }));
+    setFilters((prev: TableFilters) => ({ ...prev, ...newFilters }));
     setPage(1);
   };
 
   const updateSorting = (field: OrderBy) => {
-    setSorting(prev => ({
+    setSorting((prev: TableSorting) => ({
       orderBy: field,
       direction: prev.orderBy === field && prev.direction === 'desc' ? 'asc' : 'desc',
     }));
@@ -71,6 +72,10 @@ export const useAnimeTableState = () => {
 
   const updatePage = (newPage: number) => {
     setPage(newPage);
+  };
+
+  const toggleColumns = () => {
+    setVisibleColumns(prev => prev === 'type-score' ? 'members-episodes' : 'type-score');
   };
 
   useEffect(() => {
@@ -84,8 +89,10 @@ export const useAnimeTableState = () => {
     filters,
     sorting,
     pagination,
+    visibleColumns,
     updateFilters,
     updateSorting,
     updatePage,
+    toggleColumns,
   };
 };

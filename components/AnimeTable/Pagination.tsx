@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { Pagination as PaginationType } from './types';
 
 interface PaginationProps {
@@ -15,7 +15,9 @@ export const Pagination = React.memo(({
   loading, 
   onPageChange 
 }: PaginationProps) => {
-  const maxVisiblePages = 5;
+  const { width } = useWindowDimensions();
+  const isMobile = width < 640;
+  const maxVisiblePages = isMobile ? 3 : 5;
   const lastPage = pagination.last_visible_page;
 
   const getPageNumbers = () => {
@@ -36,11 +38,15 @@ export const Pagination = React.memo(({
 
   const pageNumbers = getPageNumbers();
 
-  const PageButton = ({ pageNum, active = false }: { pageNum: number, active?: boolean }) => (
+  const PageButton = ({ pageNum, active = false, label }: { 
+    pageNum: number, 
+    active?: boolean,
+    label?: string 
+  }) => (
     <TouchableOpacity
       onPress={() => !loading && onPageChange(pageNum)}
       disabled={active || loading}
-      className={`px-3 py-2 mx-1 rounded ${
+      className={`px-2 py-1 mx-0.5 rounded min-w-[32px] items-center justify-center ${
         active 
           ? 'bg-blue-500' 
           : loading 
@@ -48,49 +54,51 @@ export const Pagination = React.memo(({
             : 'bg-white border border-gray-300'
       }`}
     >
-      <Text className={active ? 'text-white' : 'text-gray-700'}>
-        {pageNum}
+      <Text className={`${active ? 'text-white' : 'text-gray-700'} text-sm`}>
+        {label || pageNum}
       </Text>
     </TouchableOpacity>
   );
 
   return (
-    <View className="p-4 border-t border-gray-200 flex-row justify-center items-center">
-      {page > 1 && (
-        <PageButton pageNum={page - 1} />
-      )}
+    <View className="p-2 border-t border-gray-200">
+      <View className="flex-row justify-center items-center flex-wrap">
+        {page > 1 && (
+          <PageButton pageNum={page - 1} label="←" />
+        )}
 
-      {pageNumbers[0] > 1 && (
-        <>
-          <PageButton pageNum={1} />
-          {pageNumbers[0] > 2 && (
-            <Text className="mx-2">...</Text>
-          )}
-        </>
-      )}
+        {!isMobile && pageNumbers[0] > 1 && (
+          <>
+            <PageButton pageNum={1} />
+            {pageNumbers[0] > 2 && (
+              <Text className="mx-1">...</Text>
+            )}
+          </>
+        )}
 
-      {pageNumbers.map(num => (
-        <PageButton
-          key={num}
-          pageNum={num}
-          active={num === page}
-        />
-      ))}
+        {pageNumbers.map(num => (
+          <PageButton
+            key={num}
+            pageNum={num}
+            active={num === page}
+          />
+        ))}
 
-      {pageNumbers[pageNumbers.length - 1] < lastPage && (
-        <>
-          {pageNumbers[pageNumbers.length - 1] < lastPage - 1 && (
-            <Text className="mx-2">...</Text>
-          )}
-          <PageButton pageNum={lastPage} />
-        </>
-      )}
+        {!isMobile && pageNumbers[pageNumbers.length - 1] < lastPage && (
+          <>
+            {pageNumbers[pageNumbers.length - 1] < lastPage - 1 && (
+              <Text className="mx-1">...</Text>
+            )}
+            <PageButton pageNum={lastPage} />
+          </>
+        )}
 
-      {page < lastPage && (
-        <PageButton pageNum={page + 1} />
-      )}
+        {page < lastPage && (
+          <PageButton pageNum={page + 1} label="→" />
+        )}
+      </View>
 
-      <Text className="ml-4 text-gray-600">
+      <Text className="text-center mt-2 text-sm text-gray-600">
         Всего: {pagination.items.total}
       </Text>
     </View>

@@ -19,7 +19,7 @@ export const FilterSection = ({ filters, onFiltersChange }: FilterSectionProps) 
         onChangeText={(text) => onFiltersChange({ searchQuery: text })}
       />
 
-      <View className="flex-row space-x-2 mb-2">
+      <View className="flex-row space-x-2 mb-2 gap-2">
         <TextInput
           className="border p-2 rounded-lg flex-1"
           placeholder="Мин. оценка"

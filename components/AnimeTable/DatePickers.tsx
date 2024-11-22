@@ -23,7 +23,7 @@ export const DatePickers = ({ startDate, endDate, onStartDateChange, onEndDateCh
   const [showEndPicker, setShowEndPicker] = useState(false);
 
   return (
-    <View className="flex-row space-x-2 mb-2">
+    <View className="flex-row gap-2 space-x-2 mb-2">
       {Platform.OS === 'web' ? (
         <>
           <WebDatePicker value={startDate} onChange={onStartDateChange} />
