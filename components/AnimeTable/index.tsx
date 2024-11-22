@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { useAnimeTableState } from '../../hooks/useAnimeTableState';
-import { FilterSection } from './FilterSection';
-import { TableHeader } from './TableHeader';
-import { TableRow } from './TableRow';
-import { Pagination } from './Pagination';
+import { FilterSection } from './filters';
+import { TableHeader } from './header';
+import { TableRow } from './row';
+import { Pagination } from './pagination';
 
 export default function AnimeTable() {
   const {

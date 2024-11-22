@@ -1,14 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
-import type { Pagination as PaginationType } from '@/types/anime';
-import { MOBILE_BREAKPOINT } from './constants';
-
-interface PaginationProps {
-  page: number;
-  pagination: PaginationType;
-  loading: boolean;
-  onPageChange: (page: number) => void;
-}
+import { MOBILE_BREAKPOINT } from '../constants';
+import { PaginationProps } from './props';
 
 export const Pagination = React.memo(({ 
   page, 

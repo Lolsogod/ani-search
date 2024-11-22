@@ -1,51 +1,8 @@
 import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useMemo } from 'react';
-import type { VisibleColumns } from './types';
-import type { OrderBy, SortDirection } from '@/types/anime';
-import { MOBILE_BREAKPOINT, COLUMN_SETS } from './constants';
-
-interface TableHeaderProps {
-  orderBy: OrderBy;
-  sortDirection: SortDirection;
-  onSort: (field: OrderBy) => void;
-  visibleColumns: VisibleColumns;
-  onColumnsToggle: () => void;
-}
-
-const SortIcon = ({ active, direction }: { active: boolean; direction: SortDirection }) => (
-  <Text className={`ml-1 ${active ? 'text-blue-500' : 'text-gray-400'}`}>
-    {direction === 'asc' ? '↑' : '↓'}
-  </Text>
-);
-
-const SortableColumn = ({
-  width,
-  field,
-  label,
-  orderBy,
-  sortDirection,
-  onSort,
-  numberOfLines = 1,
-  className = 'justify-center'
-}: {
-  width: string;
-  field: OrderBy;
-  label: string;
-  orderBy: OrderBy;
-  sortDirection: SortDirection;
-  onSort: (field: OrderBy) => void;
-  numberOfLines?: number;
-  className?: string;
-}) => (
-  <TouchableOpacity
-    className={`${width} flex-row items-center ${className}`}
-    onPress={() => onSort(field)}
-    accessibilityLabel={`Сортировать по ${label}`}
-  >
-    <Text className="font-bold" numberOfLines={numberOfLines}>{label}</Text>
-    <SortIcon active={orderBy === field} direction={sortDirection} />
-  </TouchableOpacity>
-);
+import { MOBILE_BREAKPOINT, COLUMN_SETS } from '../constants';
+import { SortableColumn } from './SortableColumn';
+import { TableHeaderProps } from './props';
 
 export const TableHeader = ({
   orderBy,

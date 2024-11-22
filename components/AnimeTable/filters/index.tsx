@@ -1,9 +1,9 @@
 import { View, TextInput, TouchableOpacity, Text } from 'react-native';
 import { DatePickers } from './DatePickers';
-import type { TableFilters } from './types';
+import type { TableFilters } from '../types';
 import type { AnimeType } from '@/types/anime';
 import { useCallback, useMemo, useEffect, useState } from 'react';
-import { ANIME_TYPES } from './constants';
+import { ANIME_TYPES } from '../constants';
 import debounce from 'lodash/debounce';
 
 interface FilterSectionProps {
