@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
 import type { Pagination as PaginationType } from '@/types/anime';
+import { MOBILE_BREAKPOINT } from './constants';
 
 interface PaginationProps {
   page: number;
@@ -16,7 +17,7 @@ export const Pagination = React.memo(({
   onPageChange 
 }: PaginationProps) => {
   const { width } = useWindowDimensions();
-  const isMobile = width < 640;
+  const isMobile = width < MOBILE_BREAKPOINT;
   const maxVisiblePages = isMobile ? 3 : 5;
   const lastPage = pagination.last_visible_page;
 

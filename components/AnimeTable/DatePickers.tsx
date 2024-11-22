@@ -9,10 +9,19 @@ interface DatePickersProps {
   onEndDateChange: (date: Date) => void;
 }
 
-const WebDatePicker = ({ value, onChange }: { value: Date | null, onChange: (date: Date) => void }) => (
+type WebDatePickerProps = {
+  value: Date | null;
+  onChange: (date: Date) => void;
+};
+
+const formatDate = (date: Date | null): string => {
+  return date ? date.toISOString().split('T')[0] : '';
+};
+
+const WebDatePicker = ({ value, onChange }: WebDatePickerProps) => (
   <input
     type="date"
-    value={value ? value.toISOString().split('T')[0] : ''}
+    value={formatDate(value)}
     onChange={(e) => onChange(new Date(e.target.value))}
     className="border p-2 rounded-lg flex-1"
   />
@@ -21,6 +30,16 @@ const WebDatePicker = ({ value, onChange }: { value: Date | null, onChange: (dat
 export const DatePickers = ({ startDate, endDate, onStartDateChange, onEndDateChange }: DatePickersProps) => {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
+
+  const handleStartDateChange = (event: any, date?: Date) => {
+    setShowStartPicker(false);
+    date && onStartDateChange(date);
+  };
+
+  const handleEndDateChange = (event: any, date?: Date) => {
+    setShowEndPicker(false);
+    date && onEndDateChange(date);
+  };
 
   return (
     <View className="flex-row gap-2 space-x-2 mb-2">
@@ -54,10 +73,7 @@ export const DatePickers = ({ startDate, endDate, onStartDateChange, onEndDateCh
               value={startDate || new Date()}
               mode="date"
               display="default"
-              onChange={(event, date) => {
-                setShowStartPicker(false);
-                date && onStartDateChange(date);
-              }}
+              onChange={handleStartDateChange}
             />
           )}
 
@@ -66,10 +82,7 @@ export const DatePickers = ({ startDate, endDate, onStartDateChange, onEndDateCh
               value={endDate || new Date()}
               mode="date"
               display="default"
-              onChange={(event, date) => {
-                setShowEndPicker(false);
-                date && onEndDateChange(date);
-              }}
+              onChange={handleEndDateChange}
             />
           )}
         </>

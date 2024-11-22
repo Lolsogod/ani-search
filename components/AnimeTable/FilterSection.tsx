@@ -2,15 +2,29 @@ import { View, TextInput, TouchableOpacity, Text } from 'react-native';
 import { DatePickers } from './DatePickers';
 import type { TableFilters } from './types';
 import type { AnimeType } from '@/types/anime';
+import { useCallback, useMemo } from 'react';
+import { ANIME_TYPES } from './constants';
 
 interface FilterSectionProps {
   filters: TableFilters;
   onFiltersChange: (filters: Partial<TableFilters>) => void;
 }
 
-const ANIME_TYPES: AnimeType[] = ['TV', 'Movie', 'OVA', 'Special', 'ONA', 'Music'];
+const styles = {
+  typeButton: (isSelected: boolean) => `px-3 py-1 rounded-full ${
+    isSelected ? 'bg-blue-500' : 'bg-gray-200'
+  }`,
+  typeText: (isSelected: boolean) => 
+    isSelected ? 'text-white' : 'text-gray-700'
+};
 
 export const FilterSection = ({ filters, onFiltersChange }: FilterSectionProps) => {
+  const handleTypePress = useCallback((type: AnimeType) => {
+    onFiltersChange({ 
+      selectedType: filters.selectedType === type ? undefined : type 
+    });
+  }, [filters.selectedType, onFiltersChange]);
+
   return (
     <View className="p-4 border-b border-gray-200">
       <TextInput
@@ -48,16 +62,10 @@ export const FilterSection = ({ filters, onFiltersChange }: FilterSectionProps) 
         {ANIME_TYPES.map(type => (
           <TouchableOpacity
             key={type}
-            onPress={() => onFiltersChange({ 
-              selectedType: filters.selectedType === type ? undefined : type 
-            })}
-            className={`px-3 py-1 rounded-full ${
-              filters.selectedType === type ? 'bg-blue-500' : 'bg-gray-200'
-            }`}
+            onPress={() => handleTypePress(type)}
+            className={styles.typeButton(filters.selectedType === type)}
           >
-            <Text className={
-              filters.selectedType === type ? 'text-white' : 'text-gray-700'
-            }>
+            <Text className={styles.typeText(filters.selectedType === type)}>
               {type}
             </Text>
           </TouchableOpacity>

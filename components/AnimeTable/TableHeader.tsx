@@ -1,6 +1,8 @@
 import { View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { useMemo } from 'react';
 import type { VisibleColumns } from './types';
 import type { OrderBy, SortDirection } from '@/types/anime';
+import { MOBILE_BREAKPOINT, COLUMN_SETS } from './constants';
 
 interface TableHeaderProps {
   orderBy: OrderBy;
@@ -16,97 +18,139 @@ const SortIcon = ({ active, direction }: { active: boolean; direction: SortDirec
   </Text>
 );
 
-export const TableHeader = ({ 
-  orderBy, 
-  sortDirection, 
+const SortableColumn = ({
+  width,
+  field,
+  label,
+  orderBy,
+  sortDirection,
+  onSort,
+  numberOfLines = 1,
+  className = 'justify-center'
+}: {
+  width: string;
+  field: OrderBy;
+  label: string;
+  orderBy: OrderBy;
+  sortDirection: SortDirection;
+  onSort: (field: OrderBy) => void;
+  numberOfLines?: number;
+  className?: string;
+}) => (
+  <TouchableOpacity
+    className={`${width} flex-row items-center ${className}`}
+    onPress={() => onSort(field)}
+    accessibilityLabel={`Сортировать по ${label}`}
+  >
+    <Text className="font-bold" numberOfLines={numberOfLines}>{label}</Text>
+    <SortIcon active={orderBy === field} direction={sortDirection} />
+  </TouchableOpacity>
+);
+
+export const TableHeader = ({
+  orderBy,
+  sortDirection,
   onSort,
   visibleColumns,
   onColumnsToggle
 }: TableHeaderProps) => {
   const { width } = useWindowDimensions();
-  const isMobile = width < 640;
+  const isMobile = width < MOBILE_BREAKPOINT;
 
-  const renderMobileColumns = () => {
-    if (visibleColumns === 'type-score') {
-      return (
-        <>
-          <Text className="w-16 text-center font-bold">Тип</Text>
-          <TouchableOpacity
-            className="w-20 flex-row items-center justify-center"
-            onPress={() => onSort('score')}
-          >
-            <Text className="font-bold">Рейтинг</Text>
-            <SortIcon active={orderBy === 'score'} direction={sortDirection} />
-          </TouchableOpacity>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <TouchableOpacity
-            className="w-24 flex-row items-center justify-center"
-            onPress={() => onSort('members')}
-          >
-            <Text className="font-bold" numberOfLines={1}>Польз.</Text>
-            <SortIcon active={orderBy === 'members'} direction={sortDirection} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="w-16 flex-row items-center justify-center"
-            onPress={() => onSort('episodes')}
-          >
-            <Text className="font-bold">Серии</Text>
-            <SortIcon active={orderBy === 'episodes'} direction={sortDirection} />
-          </TouchableOpacity>
-        </>
-      );
-    }
-  };
+  const mobileColumnSets = useMemo(() => ({
+    'type-score': (
+      <>
+        <Text className="w-16 text-center font-bold">Тип</Text>
+        <SortableColumn
+          width="w-20"
+          field="score"
+          label="Рейтинг"
+          orderBy={orderBy}
+          sortDirection={sortDirection}
+          onSort={onSort}
+        />
+      </>
+    ),
+    'members-episodes': (
+      <>
+        <SortableColumn
+          width="w-24"
+          field="members"
+          label="Польз."
+          orderBy={orderBy}
+          sortDirection={sortDirection}
+          onSort={onSort}
+        />
+        <SortableColumn
+          width="w-16"
+          field="episodes"
+          label="Серии"
+          orderBy={orderBy}
+          sortDirection={sortDirection}
+          onSort={onSort}
+        />
+      </>
+    )
+  }), [orderBy, sortDirection, onSort]);
+
+  const renderMobileColumns = useMemo(() =>
+    mobileColumnSets[visibleColumns as keyof typeof mobileColumnSets],
+    [mobileColumnSets, visibleColumns]
+  );
 
   return (
     <View>
       <View className="flex-row bg-gray-100 p-2 border-b border-gray-300">
-        <TouchableOpacity
-          className="flex-[2] flex-row items-center"
-          onPress={() => onSort('title')}
-        >
-          <Text className="font-bold" numberOfLines={1}>Название</Text>
-          <SortIcon active={orderBy === 'title'} direction={sortDirection} />
-        </TouchableOpacity>
+        <SortableColumn
+          width="flex-[2]"
+          field="title"
+          label="Название"
+          orderBy={orderBy}
+          sortDirection={sortDirection}
+          onSort={onSort}
+          className="justify-start"
+        />
 
-        {isMobile ? renderMobileColumns() : (
+        {isMobile ? renderMobileColumns : (
           <>
             <Text className="w-16 text-center font-bold">Тип</Text>
-            <TouchableOpacity
-              className="w-20 flex-row items-center justify-center"
-              onPress={() => onSort('score')}
-            >
-              <Text className="font-bold">Рейтинг</Text>
-              <SortIcon active={orderBy === 'score'} direction={sortDirection} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-24 flex-row items-center justify-center"
-              onPress={() => onSort('members')}
-            >
-              <Text className="font-bold" numberOfLines={1}>Пользователи</Text>
-              <SortIcon active={orderBy === 'members'} direction={sortDirection} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="w-16 flex-row items-center justify-center"
-              onPress={() => onSort('episodes')}
-            >
-              <Text className="font-bold">Серии</Text>
-              <SortIcon active={orderBy === 'episodes'} direction={sortDirection} />
-            </TouchableOpacity>
+            <SortableColumn
+              width="w-20"
+              field="score"
+              label="Рейтинг"
+              orderBy={orderBy}
+              sortDirection={sortDirection}
+              onSort={onSort}
+            />
+            <SortableColumn
+              width="w-24"
+              field="members"
+              label="Пользователи"
+              orderBy={orderBy}
+              sortDirection={sortDirection}
+              onSort={onSort}
+            />
+            <SortableColumn
+              width="w-16"
+              field="episodes"
+              label="Серии"
+              orderBy={orderBy}
+              sortDirection={sortDirection}
+              onSort={onSort}
+            />
           </>
         )}
       </View>
       {isMobile && (
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={onColumnsToggle}
           className="bg-gray-100 py-1 px-2 items-center border-b border-gray-300"
+          accessibilityLabel="Переключить отображаемые колонки"
         >
           <Text className="text-sm text-blue-500">
-            {visibleColumns === 'type-score' ? 'Показать польз./серии' : 'Показать тип/рейтинг'}
+            {visibleColumns === COLUMN_SETS.TYPE_SCORE
+              ? 'Показать польз./серии'
+              : 'Показать тип/рейтинг'}
           </Text>
         </TouchableOpacity>
       )}
